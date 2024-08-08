@@ -12,11 +12,11 @@ ThemeData getGuardZoneLightTheme() {
     scaffoldBackgroundColor: GlobalColor.culture80,
 
     appBarTheme: const AppBarTheme(
-      color: GlobalColor.culture80,
+      color: GlobalColor.green_500,
     ),
 
     shadowColor: GlobalColor.blackShadow,
-    focusColor: GlobalColor.purpleVibrant,
+    focusColor: GlobalColor.green_500,
     buttonTheme: const ButtonThemeData(
       buttonColor: GlobalColor.burgundy,
     ),
