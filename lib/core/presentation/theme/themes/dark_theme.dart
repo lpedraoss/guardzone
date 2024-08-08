@@ -3,11 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:guardzone/core/utils/color/global_color.dart';
 
 
-/// Dark theme data for the MiProj application.
+/// Dark theme data for the GuardZone application.
 var themeDark = ThemeData.dark();
 
-/// Get the customized MiProj theme based on the dark theme.
-ThemeData getMiProjDarkTheme() {
+/// Get the customized GuardZone theme based on the dark theme.
+ThemeData getGuardZoneDarkTheme() {
   return themeDark.copyWith(
     scaffoldBackgroundColor: GlobalColor.dark_slate_gray,
 
