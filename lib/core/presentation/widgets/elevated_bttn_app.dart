@@ -1,0 +1,60 @@
+import 'package:flutter/material.dart';
+import 'package:guardzone/core/presentation/theme/theme.dart';
+
+
+class ElevatedBttnApp extends StatelessWidget {
+  const ElevatedBttnApp({
+    super.key,
+    required this.onPressed,
+    this.width,
+    this.title,
+    this.borderRadius,
+    this.color,
+    this.elevation,
+  });
+
+  final Function() onPressed;
+  final double? width;
+  final String? title;
+  final Color? color;
+  final double? borderRadius, elevation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      borderRadius: BorderRadius.circular(borderRadius ?? 8),
+      elevation: elevation ?? 8,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(borderRadius ?? 8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: elevation ?? 8,
+              blurRadius: elevation ?? 8,
+              offset: Offset(0, elevation ?? 8),
+            ),
+          ],
+          color: color ?? context.redIntense,
+        ),
+        width: width ?? 200,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(borderRadius ?? 8),
+          child: ElevatedButton(
+            style: ButtonStyle(
+              elevation: WidgetStateProperty.all(
+                  0), // Desactiva el sombreado predeterminado del ElevatedButton
+              backgroundColor: WidgetStateProperty.all(
+                color ?? context.redWithOpacity,
+              ),
+            ),
+            onPressed: onPressed,
+            child: Center(
+              child: Text(title ?? 'elevated button app'),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
