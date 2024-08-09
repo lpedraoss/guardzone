@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardzone/core/presentation/theme/theme.dart';
-
+import 'package:guardzone/core/utils/color/global_color.dart';
 
 class BttnApp extends StatelessWidget {
   const BttnApp({
@@ -24,13 +24,14 @@ class BttnApp extends StatelessWidget {
   final Function()? onTap;
   final Color? color;
   final Widget? child;
+
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius:  BorderRadius.circular(50),
-        splashColor: Theme.of(context).primaryColor, // Color del efecto de onda
+        borderRadius: BorderRadius.circular(50),
+        splashColor: GlobalColor.green_700, // Color del efecto de onda
         highlightColor: Colors.transparent,
         onTap: onTap,
         child: Container(
@@ -40,7 +41,7 @@ class BttnApp extends StatelessWidget {
           decoration: decoration ??
               BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                color: color ?? context.redIntense,
+                color: color ?? GlobalColor.redIntense,
               ),
           child: child ??
               Text(
@@ -48,6 +49,7 @@ class BttnApp extends StatelessWidget {
                 style: textStyle ??
                     context.titleSmall.copyWith(
                       fontSize: 13,
+                      color: GlobalColor.green_A100,
                     ),
               ),
         ),

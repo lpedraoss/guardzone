@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guardzone/core/presentation/theme/theme.dart';
-
+import 'package:guardzone/core/utils/color/global_color.dart';
 
 class ScaffoldApp extends StatefulWidget {
   const ScaffoldApp({
@@ -40,13 +39,17 @@ class _ScaffoldAppState extends State<ScaffoldApp> {
             borderRadius: BorderRadius.circular(8),
           ),
           gradient: (widget.withGradient ?? true) == true
-              ? widget.gradient ?? context.primary_gradient
+              ? widget.gradient ?? const LinearGradient(
+                  colors: [GlobalColor.green_500, GlobalColor.green_700],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
               : null,
         ),
         child: Scaffold(
           drawer: widget.drawer,
           appBar: widget.appBar,
-          backgroundColor: widget.backgroundColor ?? Colors.transparent,
+          backgroundColor: widget.backgroundColor ?? GlobalColor.green_50,
           body: Padding(
             padding: widget.bodyPadding ?? EdgeInsets.zero,
             child: widget.body,

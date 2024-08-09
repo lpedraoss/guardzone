@@ -5,8 +5,9 @@
 // ignore_for_file: unused_element
 
 import 'package:go_router/go_router.dart';
+import 'package:guardzone/app/home/home_screen.dart';
 import 'package:guardzone/core/presentation/theme/theme.dart';
-import 'package:guardzone/main.dart';
+
 
 import 'package:turn_page_transition/turn_page_transition.dart';
 
@@ -30,7 +31,7 @@ final GoRouter appRouter = GoRouter(
       path: Routes.index,
       pageBuilder: (context, state) => CustomTransitionPage(
         key: state.pageKey,
-        child: const MyHomePage(title: '',), //esto por ahora lo coloco para que no de error pero debo crear un splash screen
+        child: const HomeScreen(), //esto por ahora lo coloco para que no de error pero debo crear un splash screen
         transitionsBuilder: (
           context,
           animation,
@@ -51,7 +52,7 @@ final GoRouter appRouter = GoRouter(
           path: Routes.home,
           pageBuilder: (context, state) => CustomTransitionPage(
             key: state.pageKey,
-            child: const MyHomePage(title: '',), //esto por ahora lo coloco para que no de error pero debo crear un home screen
+            child: const HomeScreen(), //esto por ahora lo coloco para que no de error pero debo crear un home screen
             transitionsBuilder: (
               context,
               animation,

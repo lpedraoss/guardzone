@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:guardzone/core/presentation/theme/theme.dart';
 
+import 'package:guardzone/core/utils/color/global_color.dart';
 
 class ElevatedBttnApp extends StatelessWidget {
   const ElevatedBttnApp({
@@ -29,13 +29,13 @@ class ElevatedBttnApp extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius ?? 8),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: GlobalColor.black_26_percent,
               spreadRadius: elevation ?? 8,
               blurRadius: elevation ?? 8,
               offset: Offset(0, elevation ?? 8),
             ),
           ],
-          color: color ?? context.redIntense,
+          color: color ?? GlobalColor.redIntense,
         ),
         width: width ?? 200,
         child: ClipRRect(
@@ -45,12 +45,15 @@ class ElevatedBttnApp extends StatelessWidget {
               elevation: WidgetStateProperty.all(
                   0), // Desactiva el sombreado predeterminado del ElevatedButton
               backgroundColor: WidgetStateProperty.all(
-                color ?? context.redWithOpacity,
+                color ?? GlobalColor.redWithOpacity,
               ),
             ),
             onPressed: onPressed,
             child: Center(
-              child: Text(title ?? 'elevated button app'),
+              child: Text(
+                title ?? 'elevated button app',
+                style: const TextStyle(color: GlobalColor.green_A100),
+              ),
             ),
           ),
         ),

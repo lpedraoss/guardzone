@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guardzone/core/presentation/theme/theme.dart';
-
+import 'package:guardzone/core/utils/color/global_color.dart';
 
 class CardApp extends StatelessWidget {
   const CardApp({
@@ -15,7 +14,8 @@ class CardApp extends StatelessWidget {
     this.decoration,
     this.paddingCard,
     this.withGradient,
-    this.withBoxShadow, this.gradient,
+    this.withBoxShadow,
+    this.gradient,
   });
 
   final Color? color;
@@ -26,6 +26,7 @@ class CardApp extends StatelessWidget {
   final Decoration? decoration;
   final Gradient? gradient;
   final bool? withGradient, withBoxShadow;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -43,21 +44,22 @@ class CardApp extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          color ?? context.richBlackMinus80,
-                          color?.withOpacity(0.9) ?? context.richBlackMinus80,
+                          color ?? GlobalColor.green_700,
+                          color?.withOpacity(0.9) ?? GlobalColor.green_700,
                         ],
                       )
                   : null,
               boxShadow: withBoxShadow ?? true == true
                   ? [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        offset: const Offset(0, 3),
+                      const BoxShadow(
+                        color: GlobalColor.black_26_percent,
+                        offset: Offset(0, 3),
                         blurRadius: 6,
                       ),
-                      BoxShadow(
-                        color: Colors.white.withOpacity(0.2),
-                        offset: const Offset(0, -2),
+                      const BoxShadow(
+                        color:
+                      GlobalColor.white_30_percent,
+                        offset: Offset(0, -2),
                         blurRadius: 4,
                       ),
                     ]
@@ -67,6 +69,7 @@ class CardApp extends StatelessWidget {
             const Center(
               child: Text(
                 'Card App',
+                style: TextStyle(color: GlobalColor.green_A100),
               ),
             ),
       ),
