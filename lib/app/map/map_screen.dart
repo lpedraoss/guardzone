@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'dart:math' show sin, cos, sqrt, atan2;
+import 'package:location/location.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -14,11 +15,14 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   List<CircleMarker> heatMapCircles = [];
+  LatLng? userLocation; // Variable para guardar la ubicación del usuario
+  bool loadingLocation = true; // Indicador de carga de ubicación
 
   @override
   void initState() {
     super.initState();
     _loadAndProcessData();
+    _getUserLocation(); // Obtener la ubicación del usuario
   }
 
   Future<void> _loadAndProcessData() async {
@@ -26,6 +30,7 @@ class _MapScreenState extends State<MapScreen> {
     List<dynamic> jsonResult = json.decode(data);
 
     Map<String, dynamic> barrios = {};
+
     for (var barrioData in jsonResult) {
       String barrio = barrioData['barrio'];
       List<dynamic> ubicaciones = barrioData['ubicaciones'];
@@ -81,7 +86,6 @@ class _MapScreenState extends State<MapScreen> {
         }
       }
     }
-
     // Ajusta el radio según el peligro y la extensión del barrio
     return maxDistance / 2 + peligro * 2.0; // El radio estará en metros
   }
@@ -118,6 +122,39 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  Future<void> _getUserLocation() async {
+    Location location = Location();
+
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+
+    // Comprobar si el servicio de ubicación está habilitado
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return;
+      }
+    }
+
+    // Comprobar si se tienen permisos para acceder a la ubicación
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    // Obtener la ubicación del usuario
+    LocationData locationData = await location.getLocation();
+
+    setState(() {
+      userLocation = LatLng(locationData.latitude!, locationData.longitude!);
+      loadingLocation = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
@@ -133,6 +170,21 @@ class _MapScreenState extends State<MapScreen> {
         CircleLayer(
           circles: heatMapCircles,
         ),
+        if (!loadingLocation && userLocation != null)
+          MarkerLayer(
+            markers: [
+              Marker(
+                width: 80.0,
+                height: 80.0,
+                point: userLocation!,
+                child: const Icon(
+                  Icons.person_pin_circle,
+                  color: Colors.blue,
+                  size: 40.0,
+                ),
+              ),
+            ],
+          ),
       ],
     );
   }

@@ -46,6 +46,7 @@ dependencies:
   latlong2: ^0.9.1
   geocoding: ^3.0.0
   flutter_heat_map: ^1.2.1
+  location: ^6.0.2
 
 dev_dependencies:
   flutter_test:
