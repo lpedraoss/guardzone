@@ -16,10 +16,12 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   List<CircleMarker> heatMapCircles = [];
+  List<Marker> crimeMarkers = [];
   LatLng? userLocation;
   bool loadingLocation = true;
   double? _direction; // Dirección de la brújula
   bool _isCompassVisible = false; // Controla la visibilidad de la brújula
+  bool _areMarkersVisible = true; // Controla la visibilidad de los marcadores
 
   @override
   void initState() {
@@ -49,6 +51,22 @@ class _MapScreenState extends State<MapScreen> {
 
       barrios[barrio]['cantidadDenuncias'] += ubicaciones.length;
       barrios[barrio]['ubicaciones'].addAll(ubicaciones);
+
+      // Crear marcadores para cada ubicación de denuncia
+      for (var ubicacion in ubicaciones) {
+        crimeMarkers.add(
+          Marker(
+            width: 40.0, // Tamaño fijo del marcador
+            height: 40.0, // Tamaño fijo del marcador
+            point: LatLng(ubicacion['lat'], ubicacion['lng']),
+            child: const Icon(
+              Icons.location_on,
+              color: Colors.red,
+              size: 20.0, // Tamaño fijo del ícono
+            ),
+          ),
+        );
+      }
     }
 
     heatMapCircles = barrios.entries.map((entry) {
@@ -165,6 +183,12 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  void _toggleMarkersVisibility() {
+    setState(() {
+      _areMarkersVisible = !_areMarkersVisible;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -184,6 +208,10 @@ class _MapScreenState extends State<MapScreen> {
               CircleLayer(
                 circles: heatMapCircles,
               ),
+              if (_areMarkersVisible)
+                MarkerLayer(
+                  markers: crimeMarkers,
+                ),
               if (!loadingLocation && userLocation != null)
                 MarkerLayer(
                   markers: [
@@ -191,9 +219,9 @@ class _MapScreenState extends State<MapScreen> {
                       width: 80.0,
                       height: 80.0,
                       point: userLocation!,
-                      child: const Icon(
+                      child: Icon(
                         Icons.person_pin_circle,
-                        color: Colors.blue,
+                        color: Theme.of(context).colorScheme.secondary,
                         size: 40.0,
                       ),
                     ),
@@ -217,12 +245,26 @@ class _MapScreenState extends State<MapScreen> {
           Positioned(
             bottom: 10,
             right: 10,
-            child: FloatingActionButton(
-              onPressed: _toggleCompass,
-              child: Icon(
-                _isCompassVisible ? Icons.cancel : Icons.navigation,
-                color: Colors.white,
-              ),
+            child: Column(
+              children: [
+                FloatingActionButton(
+                  onPressed: _toggleCompass,
+                  child: Icon(
+                    _isCompassVisible ? Icons.cancel : Icons.navigation,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                FloatingActionButton(
+                  onPressed: _toggleMarkersVisibility,
+                  child: Icon(
+                    _areMarkersVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
