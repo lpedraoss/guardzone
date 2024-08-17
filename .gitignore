@@ -51,3 +51,6 @@ macos/*
 linux/*
 .dart_tool/*
 .idea/*
+AdroidManifest.xml
+.env
+config
