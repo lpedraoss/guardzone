@@ -54,3 +54,4 @@ linux/*
 AdroidManifest.xml
 .env
 config
+launch.json
