@@ -4,6 +4,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'dart:math' show sin, cos, sqrt, atan2;
+import 'package:location/location.dart';
+import 'package:flutter_compass/flutter_compass.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -14,11 +16,23 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   List<CircleMarker> heatMapCircles = [];
+  List<Marker> crimeMarkers = [];
+  LatLng? userLocation;
+  bool loadingLocation = true;
+  double? _direction; // Dirección de la brújula
+  bool _isCompassVisible = false; // Controla la visibilidad de la brújula
+  bool _areMarkersVisible = true; // Controla la visibilidad de los marcadores
 
   @override
   void initState() {
     super.initState();
     _loadAndProcessData();
+    _getUserLocation();
+    FlutterCompass.events?.listen((CompassEvent event) {
+      setState(() {
+        _direction = event.heading;
+      });
+    });
   }
 
   Future<void> _loadAndProcessData() async {
@@ -26,6 +40,7 @@ class _MapScreenState extends State<MapScreen> {
     List<dynamic> jsonResult = json.decode(data);
 
     Map<String, dynamic> barrios = {};
+
     for (var barrioData in jsonResult) {
       String barrio = barrioData['barrio'];
       List<dynamic> ubicaciones = barrioData['ubicaciones'];
@@ -36,6 +51,22 @@ class _MapScreenState extends State<MapScreen> {
 
       barrios[barrio]['cantidadDenuncias'] += ubicaciones.length;
       barrios[barrio]['ubicaciones'].addAll(ubicaciones);
+
+      // Crear marcadores para cada ubicación de denuncia
+      for (var ubicacion in ubicaciones) {
+        crimeMarkers.add(
+          Marker(
+            width: 40.0, // Tamaño fijo del marcador
+            height: 40.0, // Tamaño fijo del marcador
+            point: LatLng(ubicacion['lat'], ubicacion['lng']),
+            child: const Icon(
+              Icons.location_on,
+              color: Colors.red,
+              size: 20.0, // Tamaño fijo del ícono
+            ),
+          ),
+        );
+      }
     }
 
     heatMapCircles = barrios.entries.map((entry) {
@@ -49,9 +80,9 @@ class _MapScreenState extends State<MapScreen> {
       return CircleMarker(
         point: posicionPromedio,
         color: color.withOpacity(0.5),
-        radius: radius, // Radio en metros
+        radius: radius,
         borderStrokeWidth: 2,
-        useRadiusInMeter: true, // Mantener el tamaño fijo en metros
+        useRadiusInMeter: true,
       );
     }).toList();
 
@@ -81,13 +112,11 @@ class _MapScreenState extends State<MapScreen> {
         }
       }
     }
-
-    // Ajusta el radio según el peligro y la extensión del barrio
-    return maxDistance / 2 + peligro * 2.0; // El radio estará en metros
+    return maxDistance / 2 + peligro * 2.0;
   }
 
   double _haversineDistance(LatLng point1, LatLng point2) {
-    const double earthRadius = 6371; // Radius of the Earth in kilometers
+    const double earthRadius = 6371;
 
     double dLat = _toRadians(point2.latitude - point1.latitude);
     double dLng = _toRadians(point2.longitude - point1.longitude);
@@ -99,7 +128,7 @@ class _MapScreenState extends State<MapScreen> {
             sin(dLng / 2);
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
-    return earthRadius * c * 1000; // Distance in meters
+    return earthRadius * c * 1000;
   }
 
   double _toRadians(double degrees) {
@@ -118,22 +147,128 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  Future<void> _getUserLocation() async {
+    Location location = Location();
+
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return;
+      }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    LocationData locationData = await location.getLocation();
+
+    setState(() {
+      userLocation = LatLng(locationData.latitude!, locationData.longitude!);
+      loadingLocation = false;
+    });
+  }
+
+  void _toggleCompass() {
+    setState(() {
+      _isCompassVisible = !_isCompassVisible;
+    });
+  }
+
+  void _toggleMarkersVisibility() {
+    setState(() {
+      _areMarkersVisible = !_areMarkersVisible;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-      options: const MapOptions(
-        initialCenter: LatLng(4.7110, -74.0721),
-        initialZoom: 13.0,
+    return Scaffold(
+      body: Stack(
+        children: [
+          FlutterMap(
+            options: const MapOptions(
+              initialCenter: LatLng(4.7110, -74.0721),
+              initialZoom: 13.0,
+            ),
+            children: [
+              TileLayer(
+                urlTemplate:
+                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                subdomains: const ['a', 'b', 'c'],
+              ),
+              CircleLayer(
+                circles: heatMapCircles,
+              ),
+              if (_areMarkersVisible)
+                MarkerLayer(
+                  markers: crimeMarkers,
+                ),
+              if (!loadingLocation && userLocation != null)
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      width: 80.0,
+                      height: 80.0,
+                      point: userLocation!,
+                      child: Icon(
+                        Icons.person_pin_circle,
+                        color: Theme.of(context).colorScheme.secondary,
+                        size: 40.0,
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+          if (_isCompassVisible && _direction != null)
+            Positioned(
+              right: 10,
+              top: 10,
+              child: Transform.rotate(
+                angle: (_direction! * (pi / 180) * -1),
+                child: const Icon(
+                  Icons.navigation,
+                  size: 50,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: Column(
+              children: [
+                FloatingActionButton(
+                  onPressed: _toggleCompass,
+                  child: Icon(
+                    _isCompassVisible ? Icons.cancel : Icons.navigation,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                FloatingActionButton(
+                  onPressed: _toggleMarkersVisibility,
+                  child: Icon(
+                    _areMarkersVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-      children: [
-        TileLayer(
-          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          subdomains: const ['a', 'b', 'c'],
-        ),
-        CircleLayer(
-          circles: heatMapCircles,
-        ),
-      ],
     );
   }
 }
