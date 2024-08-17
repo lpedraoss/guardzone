@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:guardzone/core/utils/color/global_color.dart';
+// Importar el archivo de colores
 
 /// Light theme data for the GuardZone application.
 var themeLight = ThemeData.light();
