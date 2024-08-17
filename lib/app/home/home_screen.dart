@@ -29,9 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return ScaffoldApp(
       appBar: AppBar(
-        title: const Text(
-          'Zona de Guardianes',
-          style: TextStyle(color: Colors.white),
+        title: const Center(
+          child: Text(
+            'Zona de Guardianes',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
         ),
         backgroundColor: context.greenColors['500'], // Usar color del tema
       ),
