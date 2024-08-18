@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:guardzone/core/utils/color/global_color.dart';
 
 class CardApp extends StatelessWidget {
   const CardApp({
@@ -29,6 +28,8 @@ class CardApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
       padding: paddingCard ?? EdgeInsets.zero,
       child: Container(
@@ -44,32 +45,32 @@ class CardApp extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          color ?? GlobalColor.green_700,
-                          color?.withOpacity(0.9) ?? GlobalColor.green_700,
+                          color ?? theme.colorScheme.primary,
+                          color?.withOpacity(0.9) ??
+                              theme.colorScheme.primary.withOpacity(0.9),
                         ],
                       )
                   : null,
               boxShadow: withBoxShadow ?? true == true
                   ? [
-                      const BoxShadow(
-                        color: GlobalColor.black_26_percent,
-                        offset: Offset(0, 3),
+                      BoxShadow(
+                        color: theme.shadowColor,
+                        offset: const Offset(0, 3),
                         blurRadius: 6,
                       ),
-                      const BoxShadow(
-                        color:
-                      GlobalColor.white_30_percent,
-                        offset: Offset(0, -2),
+                      BoxShadow(
+                        color: theme.colorScheme.onSurface.withOpacity(0.3),
+                        offset: const Offset(0, -2),
                         blurRadius: 4,
                       ),
                     ]
                   : null,
             ),
         child: child ??
-            const Center(
+            Center(
               child: Text(
                 'Card App',
-                style: TextStyle(color: GlobalColor.green_A100),
+                style: TextStyle(color: theme.colorScheme.onPrimary),
               ),
             ),
       ),

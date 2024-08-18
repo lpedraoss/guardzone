@@ -13,8 +13,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: getGuardZoneLightTheme(),
+      title: 'GuardZone',
+      theme: getGuardZoneDarkTheme(),
       home: const HomeScreen(),
     );
   }

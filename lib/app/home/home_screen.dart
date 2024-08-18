@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:guardzone/app/map/map_screen.dart';
 import 'package:guardzone/core/presentation/theme/theme.dart';
+
 import 'package:guardzone/core/presentation/widgets/scafold_app.dart';
-import 'package:guardzone/app/chat/chat_screen.dart';
+import 'package:guardzone/app/chat/screen/chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,6 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ScaffoldApp(
       appBar: AppBar(
         title: const Center(
@@ -36,7 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
             textAlign: TextAlign.center,
           ),
         ),
-        backgroundColor: context.greenColors['500'], // Usar color del tema
+        backgroundColor:
+            theme.appBarTheme.backgroundColor, // Usar color del tema
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
@@ -51,9 +55,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: context.greenColors['700'], // Usar color del tema
+        selectedItemColor: context.greenColors['50'], // Usar color del tema
         unselectedItemColor: context.greenColors['200'], // Usar color del tema
-        backgroundColor: context.greenColors['50'], // Usar color del tema
+        backgroundColor: context.greenColors['900'], // Usar color del tema
+
         onTap: _onItemTapped,
       ),
     );

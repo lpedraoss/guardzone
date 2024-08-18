@@ -9,11 +9,9 @@ var themeDark = ThemeData.dark();
 ThemeData getGuardZoneDarkTheme() {
   return themeDark.copyWith(
     scaffoldBackgroundColor: GlobalColor.green_900,
-
     appBarTheme: const AppBarTheme(
       color: GlobalColor.green_800,
     ),
-
     shadowColor: GlobalColor.black_26_percent,
     focusColor: GlobalColor.green_A400,
     buttonTheme: const ButtonThemeData(
@@ -42,7 +40,6 @@ ThemeData getGuardZoneDarkTheme() {
         borderRadius: BorderRadius.circular(40),
       ),
     ),
-
     cardTheme: CardTheme(
       color: GlobalColor.green_800,
       shadowColor: GlobalColor.black_26_percent,
@@ -54,7 +51,6 @@ ThemeData getGuardZoneDarkTheme() {
         borderRadius: BorderRadius.circular(8), // Radio de borde
       ),
     ),
-
     textTheme: GoogleFonts.abyssinicaSilTextTheme()
         .apply(bodyColor: GlobalColor.green_A100)
         .copyWith(
@@ -94,7 +90,6 @@ ThemeData getGuardZoneDarkTheme() {
         ),
       ),
     ),
-
     colorScheme: themeDark.colorScheme.copyWith(
       surface: GlobalColor.green_800,
       primary: GlobalColor.green_500,

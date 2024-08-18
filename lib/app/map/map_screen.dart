@@ -22,6 +22,9 @@ class _MapScreenState extends State<MapScreen> {
   double? _direction; // Dirección de la brújula
   bool _isCompassVisible = false; // Controla la visibilidad de la brújula
   bool _areMarkersVisible = true; // Controla la visibilidad de los marcadores
+  final MapController _mapController = MapController(); // Controlador del mapa
+  final LatLng _initialPosition =
+      const LatLng(4.7110, -74.0721); // Posición inicial del mapa
 
   @override
   void initState() {
@@ -112,7 +115,7 @@ class _MapScreenState extends State<MapScreen> {
         }
       }
     }
-    return maxDistance / 2 + peligro * 2.0;
+    return maxDistance + peligro * 10.0;
   }
 
   double _haversineDistance(LatLng point1, LatLng point2) {
@@ -177,6 +180,11 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  void _resetMapPosition() {
+    _mapController.move(
+        _initialPosition, 13.0); // Centrar el mapa en la posición inicial
+  }
+
   void _toggleCompass() {
     setState(() {
       _isCompassVisible = !_isCompassVisible;
@@ -195,8 +203,9 @@ class _MapScreenState extends State<MapScreen> {
       body: Stack(
         children: [
           FlutterMap(
-            options: const MapOptions(
-              initialCenter: LatLng(4.7110, -74.0721),
+            mapController: _mapController, // Asignar el controlador del mapa
+            options: MapOptions(
+              initialCenter: _initialPosition,
               initialZoom: 13.0,
             ),
             children: [
@@ -219,9 +228,9 @@ class _MapScreenState extends State<MapScreen> {
                       width: 80.0,
                       height: 80.0,
                       point: userLocation!,
-                      child: Icon(
+                      child: const Icon(
                         Icons.person_pin_circle,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Colors.blue,
                         size: 40.0,
                       ),
                     ),
@@ -251,6 +260,14 @@ class _MapScreenState extends State<MapScreen> {
                   onPressed: _toggleCompass,
                   child: Icon(
                     _isCompassVisible ? Icons.cancel : Icons.navigation,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                FloatingActionButton(
+                  onPressed: _resetMapPosition,
+                  child: const Icon(
+                    Icons.my_location,
                     color: Colors.white,
                   ),
                 ),
