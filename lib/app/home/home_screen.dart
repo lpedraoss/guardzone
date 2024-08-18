@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guardzone/app/map/map_screen.dart';
 import 'package:guardzone/core/presentation/theme/theme.dart';
 import 'package:guardzone/core/presentation/widgets/scafold_app.dart';
-import 'package:guardzone/app/chat/chat_screen.dart';
+import 'package:guardzone/app/chat/screen/chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

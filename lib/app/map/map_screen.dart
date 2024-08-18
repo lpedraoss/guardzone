@@ -219,9 +219,9 @@ class _MapScreenState extends State<MapScreen> {
                       width: 80.0,
                       height: 80.0,
                       point: userLocation!,
-                      child: Icon(
+                      child: const Icon(
                         Icons.person_pin_circle,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Colors.blue,
                         size: 40.0,
                       ),
                     ),
