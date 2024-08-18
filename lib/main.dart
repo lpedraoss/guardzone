@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'GuardZone',
-      theme: getGuardZoneLightTheme(),
+      theme: getGuardZoneDarkTheme(),
       home: const HomeScreen(),
     );
   }
