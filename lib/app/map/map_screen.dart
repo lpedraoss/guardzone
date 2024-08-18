@@ -24,7 +24,7 @@ class _MapScreenState extends State<MapScreen> {
   bool _areMarkersVisible = true; // Controla la visibilidad de los marcadores
   final MapController _mapController = MapController(); // Controlador del mapa
   final LatLng _initialPosition =
-      LatLng(4.7110, -74.0721); // Posición inicial del mapa
+      const LatLng(4.7110, -74.0721); // Posición inicial del mapa
 
   @override
   void initState() {

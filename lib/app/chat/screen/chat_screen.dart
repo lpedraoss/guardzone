@@ -32,7 +32,6 @@ class ChatScreen extends StatelessWidget {
       }
       return alerts;
     } catch (e) {
-      print('Error al cargar datos: $e');
       return [];
     }
   }
@@ -46,7 +45,6 @@ class ChatScreen extends StatelessWidget {
       }
       return 'Dirección no disponible';
     } catch (e) {
-      print('Error al obtener dirección: $e');
       return 'Dirección no disponible';
     }
   }
@@ -99,6 +97,7 @@ class ChatScreen extends StatelessWidget {
                               fontSize: 16,
                             ),
                           ),
+                          const SizedBox(height: 8.0), // Separación añadida
                           Text(
                             'Fecha: ${alert.fecha}',
                             style: TextStyle(
@@ -107,6 +106,10 @@ class ChatScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8.0),
+                          Divider(
+                            color: context.greenColors['50'],
+                            thickness: 1.0,
+                          ),
                           ListTile(
                             title: Text(
                               alert.title,
