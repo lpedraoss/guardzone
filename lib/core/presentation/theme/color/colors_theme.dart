@@ -3,51 +3,50 @@
 import 'package:flutter/material.dart';
 import 'package:guardzone/core/utils/color/global_color.dart';
 
-  /// A class that defines a set of color constants for the application theme
-  /// 
-  /// The colors are defined in the GlobalColor class
-  /// 
-  /// and are accessed using the context extension
+/// A class that defines a set of color constants for the application theme
+///
+/// The colors are defined in the GlobalColor class
+///
+/// and are accessed using the context extension
 extension ColorsTheme on BuildContext {
-
   /// A map that defines a set of color constants for the application theme
-  /// 
+  ///
   /// The colors are defined in the GlobalColor class
-  /// 
+  ///
   /// and are accessed using the context extension
   Map<String, Color> get greenColors => {
-    '500': GlobalColor.green_500,
-    '50': GlobalColor.green_50,
-    '100': GlobalColor.green_100,
-    '200': GlobalColor.green_200,
-    '300': GlobalColor.green_300,
-    '400': GlobalColor.green_400,
-    '600': GlobalColor.green_600,
-    '700': GlobalColor.green_700,
-    '800': GlobalColor.green_800,
-    '900': GlobalColor.green_900,
-    'A100': GlobalColor.green_A100,
-    'A200': GlobalColor.green_A200,
-    'A400': GlobalColor.green_A400,
-    'A700': GlobalColor.green_A700,
-  };
+        '500': GlobalColor.green_500,
+        '50': GlobalColor.green_50,
+        '100': GlobalColor.green_100,
+        '200': GlobalColor.green_200,
+        '300': GlobalColor.green_300,
+        '400': GlobalColor.green_400,
+        '600': GlobalColor.green_600,
+        '700': GlobalColor.green_700,
+        '800': GlobalColor.green_800,
+        '900': GlobalColor.green_900,
+        'A100': GlobalColor.green_A100,
+        'A200': GlobalColor.green_A200,
+        'A400': GlobalColor.green_A400,
+        'A700': GlobalColor.green_A700,
+      };
+
   ///intensity of the red color
-  Map<String,Color> get redColors =>{
-    '500': GlobalColor.red_500,
-    '50': GlobalColor.red_50,
-    '100': GlobalColor.red_100,
-    '200': GlobalColor.red_200,
-    '300': GlobalColor.red_300,
-    '400': GlobalColor.red_400,
-    '600': GlobalColor.red_600,
-    '700': GlobalColor.red_700,
-    '800': GlobalColor.red_800,
-    '900': GlobalColor.red_900,
-    'A100': GlobalColor.red_A100,
-    'A200': GlobalColor.red_A200,
-  };
-  
-  
+  Map<String, Color> get redColors => {
+        '500': GlobalColor.red_500,
+        '50': GlobalColor.red_50,
+        '100': GlobalColor.red_100,
+        '200': GlobalColor.red_200,
+        '300': GlobalColor.red_300,
+        '400': GlobalColor.red_400,
+        '600': GlobalColor.red_600,
+        '700': GlobalColor.red_700,
+        '800': GlobalColor.red_800,
+        '900': GlobalColor.red_900,
+        'A100': GlobalColor.red_A100,
+        'A200': GlobalColor.red_A200,
+      };
+
   ///color rich black
   Color get richBlack => GlobalColor.richBlack;
 

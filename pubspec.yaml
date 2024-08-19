@@ -48,6 +48,7 @@ dependencies:
   location: ^6.0.2
   flutter_compass: ^0.8.0
   share: ^2.0.4
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
