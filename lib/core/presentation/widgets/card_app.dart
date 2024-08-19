@@ -15,6 +15,10 @@ class CardApp extends StatelessWidget {
     this.withGradient,
     this.withBoxShadow,
     this.gradient,
+    this.boxShadow,
+    this.withBorder,
+    this.borderColor,
+    this.borderWidth,
   });
 
   final Color? color;
@@ -24,7 +28,10 @@ class CardApp extends StatelessWidget {
   final BorderRadiusGeometry? borderRadius;
   final Decoration? decoration;
   final Gradient? gradient;
-  final bool? withGradient, withBoxShadow;
+  final bool? withGradient, withBoxShadow, withBorder;
+  final List<BoxShadow>? boxShadow;
+  final Color? borderColor;
+  final double? borderWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -52,21 +59,28 @@ class CardApp extends StatelessWidget {
                       )
                   : null,
               boxShadow: withBoxShadow ?? true == true
-                  ? [
-                      BoxShadow(
-                        color: theme.shadowColor,
-                        offset: const Offset(0, 3),
-                        blurRadius: 6,
-                      ),
-                      BoxShadow(
-                        color: theme.colorScheme.onSurface.withOpacity(0.3),
-                        offset: const Offset(0, -2),
-                        blurRadius: 4,
-                      ),
-                    ]
+                  ? boxShadow ??
+                      [
+                        BoxShadow(
+                          color: theme.shadowColor,
+                          offset: const Offset(0, 3),
+                          blurRadius: 6,
+                        ),
+                        BoxShadow(
+                          color: theme.colorScheme.onSurface.withOpacity(0.3),
+                          offset: const Offset(0, -2),
+                          blurRadius: 4,
+                        ),
+                      ]
+                  : null,
+              border: withBorder ?? false
+                  ? Border.all(
+                      color: borderColor ?? theme.colorScheme.onPrimary,
+                      width: borderWidth ?? 4.0,
+                    )
                   : null,
             ),
-        child: child ??
+        child: child ?? 
             Center(
               child: Text(
                 'Card App',
