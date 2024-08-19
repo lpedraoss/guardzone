@@ -308,5 +308,185 @@
                 "fecha": "2023-10-01"
             }
         ]
+    },
+    {
+        "barrio": "Fontibón",
+        "ubicaciones": [
+            {
+                "lat": 4.678346,
+                "lng": -74.142083,
+                "crimen": "Robo",
+                "descripcion": "Robo de mercancía en una tienda de electrodomésticos",
+                "hora": "09:00",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.678346,
+                "lng": -74.141083,
+                "crimen": "Asalto",
+                "descripcion": "Asalto a mano armada a un transeúnte",
+                "hora": "10:30",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.677346,
+                "lng": -74.141083,
+                "crimen": "Vandalismo",
+                "descripcion": "Vandalismo en una propiedad privada",
+                "hora": "11:45",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.678246,
+                "lng": -74.142183,
+                "crimen": "Disturbios",
+                "descripcion": "Disturbios en la plaza central",
+                "hora": "12:00",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.678146,
+                "lng": -74.142283,
+                "crimen": "Robo",
+                "descripcion": "Robo de vehículos en la zona",
+                "hora": "13:15",
+                "fecha": "2023-10-01"
+            }
+        ]
+    },
+    {
+        "barrio": "Suba",
+        "ubicaciones": [
+            {
+                "lat": 4.755346,
+                "lng": -74.105083,
+                "crimen": "Robo",
+                "descripcion": "Robo en el centro comercial",
+                "hora": "14:00",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.755346,
+                "lng": -74.104083,
+                "crimen": "Asalto",
+                "descripcion": "Asalto a mano armada en una tienda",
+                "hora": "15:30",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.754346,
+                "lng": -74.104083,
+                "crimen": "Vandalismo",
+                "descripcion": "Actos de vandalismo en el parque central",
+                "hora": "16:45",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.755246,
+                "lng": -74.105183,
+                "crimen": "Disturbios",
+                "descripcion": "Disturbios en la plaza del barrio",
+                "hora": "17:00",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.755146,
+                "lng": -74.105283,
+                "crimen": "Robo",
+                "descripcion": "Robo de bicicletas en la zona",
+                "hora": "18:15",
+                "fecha": "2023-10-01"
+            }
+        ]
+    },
+    {
+        "barrio": "Engativá",
+        "ubicaciones": [
+            {
+                "lat": 4.698346,
+                "lng": -74.114083,
+                "crimen": "Robo",
+                "descripcion": "Robo a mano armada en una tienda",
+                "hora": "08:00",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.698346,
+                "lng": -74.113083,
+                "crimen": "Asalto",
+                "descripcion": "Asalto a transeúntes en la calle",
+                "hora": "09:15",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.697346,
+                "lng": -74.113083,
+                "crimen": "Vandalismo",
+                "descripcion": "Vandalismo en propiedades privadas",
+                "hora": "10:30",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.698246,
+                "lng": -74.114183,
+                "crimen": "Disturbios",
+                "descripcion": "Disturbios en el parque del barrio",
+                "hora": "11:45",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.698146,
+                "lng": -74.114283,
+                "crimen": "Robo",
+                "descripcion": "Robo de vehículos en la zona",
+                "hora": "12:00",
+                "fecha": "2023-10-01"
+            }
+        ]
+    },
+    {
+        "barrio": "Bosa",
+        "ubicaciones": [
+            {
+                "lat": 4.625346,
+                "lng": -74.185083,
+                "crimen": "Robo",
+                "descripcion": "Robo en el mercado local",
+                "hora": "06:30",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.625346,
+                "lng": -74.184083,
+                "crimen": "Asalto",
+                "descripcion": "Asalto a mano armada a un transeúnte",
+                "hora": "07:45",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.624346,
+                "lng": -74.184083,
+                "crimen": "Vandalismo",
+                "descripcion": "Vandalismo en una propiedad privada",
+                "hora": "09:00",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.625246,
+                "lng": -74.185183,
+                "crimen": "Disturbios",
+                "descripcion": "Disturbios en la plaza central",
+                "hora": "10:15",
+                "fecha": "2023-10-01"
+            },
+            {
+                "lat": 4.625146,
+                "lng": -74.185283,
+                "crimen": "Robo",
+                "descripcion": "Robo de vehículos en la zona",
+                "hora": "11:30",
+                "fecha": "2023-10-01"
+            }
+        ]
     }
 ]

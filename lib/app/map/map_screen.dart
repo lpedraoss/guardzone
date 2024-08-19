@@ -21,7 +21,7 @@ class _MapScreenState extends State<MapScreen> {
   bool loadingLocation = true;
   double? _direction; // Dirección de la brújula
   bool _isCompassVisible = false; // Controla la visibilidad de la brújula
-  bool _areMarkersVisible = true; // Controla la visibilidad de los marcadores
+  bool _areMarkersVisible = false; // Controla la visibilidad de los marcadores
   final MapController _mapController = MapController(); // Controlador del mapa
   final LatLng _initialPosition =
       const LatLng(4.7110, -74.0721); // Posición inicial del mapa
@@ -139,15 +139,14 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Color _getColorForDangerLevel(double peligro) {
-    if (peligro > 10) {
-      return Colors.red;
-    } else if (peligro > 5) {
-      return Colors.redAccent;
-    } else if (peligro > 2) {
-      return Colors.orange;
-    } else {
-      return Colors.yellow.withOpacity(0.7);
-    }
+    // Normaliza el valor de peligro entre 0 y 1
+    double normalizedPeligro = (peligro / 10).clamp(0.0, 1.0);
+
+    // Interpolación de color de amarillo a rojo
+    int red = 255;
+    int green = (255 * (1 - normalizedPeligro)).toInt();
+
+    return Color.fromARGB(255, red, green, 0);
   }
 
   Future<void> _getUserLocation() async {

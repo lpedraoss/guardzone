@@ -5,6 +5,7 @@ import 'package:guardzone/app/chat/domain/models/crime_alert.dart';
 import 'package:guardzone/core/presentation/theme/theme.dart';
 import 'package:guardzone/core/presentation/widgets/card_app.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:share/share.dart'; // Importa el paquete share
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
@@ -49,6 +50,19 @@ class ChatScreen extends StatelessWidget {
     }
   }
 
+  void _shareAlert(CrimeAlert alert, String address) {
+    final String content = '''
+Alerta de Crimen:
+Barrio: ${alert.barrio}
+Fecha: ${alert.fecha}
+Crimen: ${alert.title}
+Descripción: ${alert.descripcion}
+Hora: ${alert.hora}
+Ubicación: $address
+    ''';
+    Share.share(content);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<CrimeAlert>>(
@@ -86,6 +100,21 @@ class ChatScreen extends StatelessWidget {
                     return CardApp(
                       padding: const EdgeInsets.all(8.0),
                       paddingCard: const EdgeInsets.all(8.0),
+                      borderRadius:
+                          BorderRadius.circular(16), // Bordes más redondeados
+                      withBoxShadow: true, // Añadir sombras
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.4),
+                          spreadRadius: 2,
+                          blurRadius: 10,
+                          offset: const Offset(
+                              0, 5), // Cambiar la posición de la sombra
+                        ),
+                      ],
+                      withBorder: true, // Añadir borde
+                      borderColor: Colors.black.withOpacity(0.2),
+                      borderWidth: 4.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -139,7 +168,8 @@ class ChatScreen extends StatelessWidget {
                                 icon: Icon(Icons.share,
                                     color: context.greenColors['50']),
                                 onPressed: () {
-                                  // Acción de "Compartir"
+                                  _shareAlert(
+                                      alert, address); // Acción de "Compartir"
                                 },
                               ),
                             ],
