@@ -1,3 +1,5 @@
+
+// map_screen.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -7,6 +9,7 @@ import 'dart:math' show sin, cos, sqrt, atan2;
 import 'package:location/location.dart';
 import 'package:flutter_compass/flutter_compass.dart';
 import 'package:http/http.dart' as http;
+part 'map_screen_helpers.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -95,80 +98,19 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {});
   }
 
-  LatLng _calcularPosicionPromedio(List<dynamic> ubicaciones) {
-    double latSum = 0;
-    double lngSum = 0;
-    for (var ubicacion in ubicaciones) {
-      latSum += ubicacion['lat'];
-      lngSum += ubicacion['lng'];
-    }
-    return LatLng(latSum / ubicaciones.length, lngSum / ubicaciones.length);
-  }
-
-  double _calculateRadius(List<dynamic> ubicaciones, double peligro) {
-    double maxDistance = 0;
-    for (var i = 0; i < ubicaciones.length; i++) {
-      for (var j = i + 1; j < ubicaciones.length; j++) {
-        double distance = _haversineDistance(
-          LatLng(ubicaciones[i]['lat'], ubicaciones[i]['lng']),
-          LatLng(ubicaciones[j]['lat'], ubicaciones[j]['lng']),
-        );
-        if (distance > maxDistance) {
-          maxDistance = distance;
-        }
-      }
-    }
-    return maxDistance + peligro * 10.0;
-  }
-
-  double _haversineDistance(LatLng point1, LatLng point2) {
-    const double earthRadius = 6371;
-
-    double dLat = _toRadians(point2.latitude - point1.latitude);
-    double dLng = _toRadians(point2.longitude - point1.longitude);
-
-    double a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_toRadians(point1.latitude)) *
-            cos(_toRadians(point2.latitude)) *
-            sin(dLng / 2) *
-            sin(dLng / 2);
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
-    return earthRadius * c * 1000;
-  }
-
-  double _toRadians(double degrees) {
-    return degrees * pi / 180;
-  }
-
-  Color _getColorForDangerLevel(double peligro) {
-    double normalizedPeligro = (peligro / 10).clamp(0.0, 1.0);
-    int red = 255;
-    int green = (255 * (1 - normalizedPeligro)).toInt();
-
-    return Color.fromARGB(255, red, green, 0);
-  }
-
   Future<void> _getUserLocation() async {
     Location location = Location();
 
-    bool serviceEnabled;
-    PermissionStatus permissionGranted;
-
-    serviceEnabled = await location.serviceEnabled();
+    bool serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await location.requestService();
-      if (!serviceEnabled) {
-        return;
-      }
+      if (!serviceEnabled) return;
     }
 
-    permissionGranted = await location.hasPermission();
+    PermissionStatus permissionGranted = await location.hasPermission();
     if (permissionGranted == PermissionStatus.denied) {
       permissionGranted = await location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
-      }
+      if (permissionGranted != PermissionStatus.granted) return;
     }
 
     LocationData locationData = await location.getLocation();
@@ -197,36 +139,15 @@ class _MapScreenState extends State<MapScreen> {
           _getRoute(userLocation!, _destination!, _travelMode);
         }
       } else {
-        // Manejar el caso en el que la dirección no se puede geocodificar
-        print('Dirección no encontrada');
+        throw('Dirección no encontrada');
       }
     } else {
-      // Manejar el error en caso de que la solicitud falle
-      print('Error al geocodificar la dirección: ${response.statusCode}');
-    }
-  }
-
-// Ejemplo de implementación de la función _fetchSearchOptions
-  Future<List<String>> _fetchSearchOptions(String query) async {
-    final String url =
-        'https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(query)}&format=json&addressdetails=1';
-
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonResponse = json.decode(response.body);
-      return jsonResponse
-          .map((item) => item['display_name'] as String)
-          .toList();
-    } else {
-      // Manejar el error en caso de que la solicitud falle
-      print('Error al obtener opciones de búsqueda: ${response.statusCode}');
-      return [];
+      throw('Error al geocodificar la dirección: ${response.statusCode}');
     }
   }
 
   Future<void> _getRoute(LatLng start, LatLng end, String mode) async {
-    final String baseUrl = 'http://router.project-osrm.org/route/v1';
+    const String baseUrl = 'http://router.project-osrm.org/route/v1';
     final String url =
         '$baseUrl/$mode/${start.longitude},${start.latitude};${end.longitude},${end.latitude}?overview=full&geometries=geojson';
 
@@ -248,8 +169,7 @@ class _MapScreenState extends State<MapScreen> {
         );
       });
     } else {
-      // Manejar el error en caso de que la solicitud falle
-      print('Error al obtener la ruta: ${response.statusCode}');
+      throw('Error al obtener la ruta: ${response.statusCode}');
     }
   }
 
@@ -279,204 +199,201 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Barra de búsqueda y selección de modo de viaje
-        Container(
-          color: Theme.of(context)
-              .appBarTheme
-              .backgroundColor, // Usar color del tema
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  style: const TextStyle(
-                      color: Colors
-                          .black), // Establecer el color del texto en negro
-                  onSubmitted: (value) {
-                    _geocodeAddress(value);
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Buscar dirección...',
-                    fillColor: Colors.white,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.search),
-                      onPressed: () {
-                        _geocodeAddress(_address);
-                      },
-                    ),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _address = value;
-                    });
-                  },
-                ),
-              ),
-              const SizedBox(width: 8),
-              DropdownButton<String>(
-                value: _travelMode,
-                items: const [
-                  DropdownMenuItem(
-                    value: 'driving',
-                    child: Row(
-                      children: [
-                        Icon(Icons.directions_car),
-                        SizedBox(width: 8),
-                        Text('Automóvil'),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 'walking',
-                    child: Row(
-                      children: [
-                        Icon(Icons.directions_walk),
-                        SizedBox(width: 8),
-                        Text('A pie'),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: 'cycling',
-                    child: Row(
-                      children: [
-                        Icon(Icons.directions_bike),
-                        SizedBox(width: 8),
-                        Text('Bicicleta'),
-                      ],
-                    ),
-                  ),
-                ],
-                onChanged: _onTravelModeChanged,
-              ),
-            ],
-          ),
-        ),
+        _buildSearchBar(context),
         Expanded(
           child: Stack(
             children: [
-              FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(
-                  initialCenter: _initialPosition,
-                  initialZoom: 13.0,
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    subdomains: const ['a', 'b', 'c'],
-                  ),
-                  CircleLayer(
-                    circles: heatMapCircles,
-                  ),
-                  if (_areMarkersVisible)
-                    MarkerLayer(
-                      markers: crimeMarkers,
-                    ),
-                  if (!loadingLocation && userLocation != null)
-                    MarkerLayer(
-                      markers: [
-                        Marker(
-                          width: 80.0,
-                          height: 80.0,
-                          point: userLocation!,
-                          child: const Icon(
-                            Icons.person_pin_circle,
-                            color: Colors.blue,
-                            size: 40.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (_routeLine != null)
-                    PolylineLayer(
-                      polylines: [_routeLine!],
-                    ),
-                ],
-              ),
-              Positioned(
-                top: 20,
-                left: 10,
-                right: 10,
-                child: Column(
-                  children: [
-                    if (_searchOptions.isNotEmpty)
-                      Container(
-                        color: Colors.white,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: _searchOptions.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(_searchOptions[index]),
-                              onTap: () {
-                                setState(() {
-                                  _address = _searchOptions[index];
-                                  _searchOptions.clear();
-                                });
-                                _geocodeAddress(_address);
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              if (_isCompassVisible && _direction != null)
-                Positioned(
-                  top: 50,
-                  left: 20,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      children: [
-                        const Icon(Icons.navigation, color: Colors.white),
-                        Text(
-                          '${_direction!.toStringAsFixed(0)}°',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              Positioned(
-                top: 50,
-                right: 20,
-                child: Column(
-                  children: [
-                    FloatingActionButton(
-                      onPressed: _resetMapPosition,
-                      child: const Icon(Icons.location_searching),
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      onPressed: _toggleCompass,
-                      child: const Icon(Icons.explore),
-                    ),
-                    const SizedBox(height: 10),
-                    FloatingActionButton(
-                      onPressed: _toggleMarkersVisibility,
-                      child: const Icon(Icons.layers),
-                    ),
-                  ],
-                ),
-              ),
+              _buildMap(),
+              _buildSearchOptions(),
+              if (_isCompassVisible && _direction != null) _buildCompass(),
+              _buildFloatingButtons(),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildSearchBar(BuildContext context) {
+    return Container(
+      color: Theme.of(context).appBarTheme.backgroundColor,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              style: const TextStyle(color: Colors.black),
+              onSubmitted: (value) => _geocodeAddress(value),
+              decoration: InputDecoration(
+                hintText: 'Buscar dirección...',
+                fillColor: Colors.white,
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () => _geocodeAddress(_address),
+                ),
+              ),
+              onChanged: (value) => setState(() => _address = value),
+            ),
+          ),
+          const SizedBox(width: 8),
+          DropdownButton<String>(
+            value: _travelMode,
+            items: const [
+              DropdownMenuItem(
+                value: 'driving',
+                child: Row(
+                  children: [
+                    Icon(Icons.directions_car),
+                    SizedBox(width: 8),
+                    Text('Automóvil'),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: 'walking',
+                child: Row(
+                  children: [
+                    Icon(Icons.directions_walk),
+                    SizedBox(width: 8),
+                    Text('A pie'),
+                  ],
+                ),
+              ),
+              DropdownMenuItem(
+                value: 'cycling',
+                child: Row(
+                  children: [
+                    Icon(Icons.directions_bike),
+                    SizedBox(width: 8),
+                    Text('Bicicleta'),
+                  ],
+                ),
+              ),
+            ],
+            onChanged: _onTravelModeChanged,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMap() {
+    return FlutterMap(
+      mapController: _mapController,
+      options: MapOptions(
+        initialCenter: _initialPosition,
+        initialZoom: 13.0,
+      ),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          subdomains: const ['a', 'b', 'c'],
+        ),
+        CircleLayer(circles: heatMapCircles),
+        if (_areMarkersVisible) MarkerLayer(markers: crimeMarkers),
+        if (!loadingLocation && userLocation != null)
+          MarkerLayer(
+            markers: [
+              Marker(
+                width: 80.0,
+                height: 80.0,
+                point: userLocation!,
+                child: const Icon(
+                  Icons.person_pin_circle,
+                  color: Colors.blue,
+                  size: 40.0,
+                ),
+              ),
+            ],
+          ),
+        if (_routeLine != null) PolylineLayer(polylines: [_routeLine!]),
+      ],
+    );
+  }
+
+  Widget _buildSearchOptions() {
+    return Positioned(
+      top: 20,
+      left: 10,
+      right: 10,
+      child: Column(
+        children: [
+          if (_searchOptions.isNotEmpty)
+            Container(
+              color: Colors.white,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _searchOptions.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(_searchOptions[index]),
+                    onTap: () {
+                      setState(() {
+                        _address = _searchOptions[index];
+                        _searchOptions.clear();
+                      });
+                      _geocodeAddress(_address);
+                    },
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompass() {
+    return Positioned(
+      top: 50,
+      left: 20,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          children: [
+            const Icon(Icons.navigation, color: Colors.white),
+            Text(
+              '${_direction!.toStringAsFixed(0)}°',
+              style: const TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFloatingButtons() {
+    return Positioned(
+      top: 50,
+      right: 20,
+      child: Column(
+        children: [
+          FloatingActionButton(
+            onPressed: _resetMapPosition,
+            child: const Icon(Icons.location_searching),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: _toggleCompass,
+            child: const Icon(Icons.explore),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: _toggleMarkersVisibility,
+            child: const Icon(Icons.layers),
+          ),
+        ],
+      ),
     );
   }
 }
